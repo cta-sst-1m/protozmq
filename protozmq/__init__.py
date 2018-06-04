@@ -48,8 +48,7 @@ class EventSource:
         R1_pb2.CameraEvents, by default this reads L0_pb2.CameraEvents.
         '''
         self.socket.connect(zmq_config)
-        self.data_type = data_type
-        if self.data_type == "R1":
+        if data_type == "R1":
             self.raw_message = R1_pb2.CameraEvent()
 
     def receive_message(self):
