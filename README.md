@@ -14,9 +14,9 @@ To use it, one must obviously start an event source, e.g.
 and then within python:
 
 ```python
->>from protozmq import EventSource
->>source = EventSource("tcp://localhost:1234", "L0")
->>message = source.receive_message()
+from protozmq import EventSource
+source = EventSource("tcp://localhost:1234", "L0")
+message = source.receive_message()
 ```
 
 and keep calling `receive_message()` to get the data from the real-time streams.
