@@ -43,6 +43,10 @@ class EventSource:
     raw_message = L0_pb2.CameraEvent()
 
     def __init__(self, zmq_config, data_type=None):
+        '''
+        data_type can be set to the string "R1" in order to read
+        R1_pb2.CameraEvents, by default this reads L0_pb2.CameraEvents.
+        '''
         self.socket.connect(zmq_config)
         self.data_type = data_type
         if self.data_type == "R1":
