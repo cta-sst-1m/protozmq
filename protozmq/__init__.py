@@ -37,14 +37,12 @@ pb2_modules = {
 
 class EventSource:
 
-    #need a zmq context + socket
     context = zmq.Context()
-    socket  = context.socket(zmq.PULL)
-    data_type = ""
+    socket = context.socket(zmq.PULL)
     cta_message = CoreMessages_pb2.CTAMessage()
     raw_message = L0_pb2.CameraEvent()
 
-    def __init__(self, zmq_config, data_type):
+    def __init__(self, zmq_config, data_type=None):
         self.socket.connect(zmq_config)
         self.data_type = data_type
         if self.data_type == "R1":
