@@ -17,7 +17,7 @@ setup(
     install_requires=[
         'numpy',
         'protobuf',
-        'zmq',
+        'pyzmq',
     ],
     zip_safe=False,
 )
