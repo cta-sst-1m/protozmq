@@ -70,9 +70,9 @@ class EventSource:
             self.L0_message.ParseFromString(self.cta_message.payload_data[0])
             return make_namedtuple(self.L0_message)
         
-        print("Message type" + str(self.cta_message.payload_type[0]) + " not handled yet")
+        print("Message type " + str(self.cta_message.payload_type[0]) + " not handled yet")
 
-        return null 
+        return "" 
 
 # Everything below is strictly identical to what is in protozfits.__init__
 # Will be moved into its own package soon.
