@@ -38,24 +38,41 @@ pb2_modules = {
 class EventSource:
 
     context = zmq.Context()
-    socket = context.socket(zmq.PULL)
+    in_socket  = context.socket(zmq.PULL)
+    out_socket = context.socket(zmq.PUSH)
     cta_message = CoreMessages_pb2.CTAMessage()
-    raw_message = L0_pb2.CameraEvent()
+    L0_message = L0_pb2.CameraEvent()
+    R1_message = R1_pb2.CameraEvent()
+    forward_messages = False 
 
-    def __init__(self, zmq_config, data_type=None):
+    def __init__(self, zmq_in_config, zmq_out_config=""):
         '''
         data_type can be set to the string "R1" in order to read
         R1_pb2.CameraEvents, by default this reads L0_pb2.CameraEvents.
         '''
-        self.socket.connect(zmq_config)
-        if data_type == "R1":
-            self.raw_message = R1_pb2.CameraEvent()
-
+        self.in_socket.connect(zmq_in_config)
+        if zmq_out_config != "":
+            self.forward_messages = True
+            self.out_socket.bind(zmq_out_config)
+                    
     def receive_message(self):
-        binary_message = self.socket.recv()
+        binary_message = self.in_socket.recv()
+        if self.forward_messages == True:
+            self.out_socket.send(binary_message)
+        
         self.cta_message.ParseFromString(binary_message)
-        self.raw_message.ParseFromString(self.cta_message.payload_data[0])
-        return make_namedtuple(self.raw_message)
+        
+        if self.cta_message.payload_type[0] == 16:
+            self.R1_message.ParseFromString(self.cta_message.payload_data[0])
+            return make_namedtuple(self.R1_message)
+        
+        if self.cta_message.payload_type[0] == 8:
+            self.L0_message.ParseFromString(self.cta_message.payload_data[0])
+            return make_namedtuple(self.L0_message)
+        
+        print("Message type" + str(self.cta_message.payload_type[0]) + " not handled yet")
+
+        return null 
 
 # Everything below is strictly identical to what is in protozfits.__init__
 # Will be moved into its own package soon.
